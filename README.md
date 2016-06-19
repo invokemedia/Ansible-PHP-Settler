@@ -65,7 +65,8 @@ Here is how you would launch the default Nginx setup.
 - hosts: web
   sudo: yes
   vars:
-    settler_nginx_server_name: ec2-1-1-1-1.us-west-2.compute.amazonaws.com
+    settler_update_cache: no
+    settler_upgrade_packages: no
     settler_nginx_site_folder_root: /var/www/html
     settler_nginx_site_public_folder: /public
   roles:
