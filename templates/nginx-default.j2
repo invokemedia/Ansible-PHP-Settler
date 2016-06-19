@@ -1,14 +1,10 @@
 server {
-    listen 80 {{ settler_nginx_default_server }};
-    listen [::]:80 {{ settler_nginx_default_server }} ipv6only=on;
+    listen {{ settler_nginx_default_server | default("80") }};
+    listen [::]:{{ settler_nginx_default_server | default("80") }} ipv6only=on;
 
-    {% if settler_nginx_server_name is defined %}
-    server_name {{ settler_nginx_server_name }};
-    {% endif %}
+    server_name {{ settler_nginx_server_name | default("localhost") }};
 
-    {% if vhost.root is defined %}
-    root {{ settler_nginx_site_folder_root }}/public;
-    {% endif %}
+    root {{ settler_nginx_site_folder_root }}{{ settler_nginx_site_public_folder }};
 
     index index.php index.html index.htm;
 
@@ -19,7 +15,7 @@ server {
     location ~ \.php$ {
         try_files $uri /index.php =404;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php7.0-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;

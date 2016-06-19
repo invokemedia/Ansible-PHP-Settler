@@ -29,7 +29,6 @@
   apt_repository: repo={{ item }}
   with_items:
     - "ppa:nginx/stable"
-    - "ppa:nginx/development"
     - "ppa:chris-lea/redis-server"
     - "ppa:ondrej/php"
 
@@ -134,11 +133,8 @@
 - name: set some php fpm settings
   template: src=php-fpm.ini dest=/etc/php/7.0/fpm/php.ini
   notify:
+    - restart php-fpm
     - restart nginx
-
-# Setup Some PHP-FPM Options
-- name: set some php fpm settings
-  template: src=php-fpm.ini dest=/etc/php/7.0/fpm/php.ini
 
 
 # Copy fastcgi_params to Nginx because they broke it on the PPA
@@ -168,7 +164,7 @@
 
 
 # Add Vagrant User To WWW-Data
-- name: add vagrant user to www-data
+- name: add user to www-data
   user: name={{ settler_user }} groups=www-data append=yes
 
 
