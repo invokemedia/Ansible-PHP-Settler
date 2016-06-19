@@ -55,7 +55,7 @@ Example Playbook
 
 ```
 roles:
-  - { role: invoke.ansible-laravel-settler }
+  - { role: invokemedia.ansible-laravel-settler }
 ```
 
 License
