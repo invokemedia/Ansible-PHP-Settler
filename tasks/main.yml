@@ -1,0 +1,229 @@
+---
+# tasks file for settler
+
+# Update Package List
+- name: update package lists
+  apt: update_cache=yes cache_valid_time={{ settler_cache_valid_time }}
+  when: settler_update_cache
+
+- name: upgrade all packages
+  apt: upgrade=dist
+  when: settler_upgrade_packages
+
+
+# Force Locale
+- name: force locale
+  lineinfile: line='LC_ALL=en_US.UTF-8' dest=/etc/default/locale
+- name: locale gen
+  locale_gen: name=en_US.UTF-8 state=present
+
+
+# Install Some PPAs
+- name: install software-properties-common
+  apt: name={{ item }} state=present
+  with_items:
+    - "software-properties-common"
+    - "curl"
+
+- name: add package repositories
+  apt_repository: repo={{ item }}
+  with_items:
+    - "ppa:nginx/stable"
+    - "ppa:nginx/development"
+    - "ppa:chris-lea/redis-server"
+    - "ppa:ondrej/php"
+
+
+# Update Package Lists
+- name: update package lists
+  apt: update_cache=yes
+
+
+# Install Some Basic Packages
+- name: install some basic packages
+  apt: name={{ item }} state=present
+  with_items:
+    - "build-essential"
+    - "dos2unix"
+    - "gcc"
+    - "git"
+    - "libmcrypt4"
+    - "libpcre3-dev"
+    - "libnotify-bin"
+    - "make"
+    - "python2.7-dev"
+    - "python-pip"
+    - "re2c"
+    - "supervisor"
+    - "unattended-upgrades"
+    - "whois"
+    - "vim"
+
+
+# Set My Timezone
+- name: set my timezone
+  file: src={{ settler_timezone_file }} dest=/etc/localtime state=link force=yes
+
+
+# Install PHP
+- name: install php requirements
+  apt: name={{ item }} state=present
+  with_items:
+    - "php7.0-bcmath"
+    - "php7.0-cli"
+    - "php7.0-dev"
+    - "php7.0-intl"
+    - "php7.0-mcrypt"
+    - "php7.0-readline"
+    - "php7.0-zip"
+    - "php-apcu"
+    - "php-curl"
+    - "php-gd"
+    - "php-imap"
+    - "php-mbstring"
+    - "php-memcached"
+    - "php-mysql"
+    - "php-pgsql"
+    - "php-soap"
+    - "php-sqlite3"
+    - "php-xml"
+
+# Install Composer
+- name: install composer
+  shell: curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+
+
+# Add Composer Global Bin To Path
+- name: add composer global bin to path
+  lineinfile: dest=/home/{{ settler_user }}/.profile line=PATH="/home/{{ settler_user }}/.composer/vendor/bin:$PATH" create=yes
+
+
+# Set Some PHP CLI Settings
+- name: set some php cli settings
+  template: src=php.ini dest=/etc/php/7.0/cli/conf.d/00-php.ini
+
+
+# Install Nginx & PHP-FPM
+- name: install nginx and php-fpm
+  apt: name={{ item }} state=present
+  with_items:
+    - nginx
+    - php7.0-fpm
+
+- name: ensure nginx is running
+  service: name=nginx state=started enabled=yes
+
+- name: ensure php7.0-fpm is running
+  service: name=php7.0-fpm state=started enabled=yes
+
+# - file: dest={{ item }} state=absent
+#   with_items:
+#     - "/etc/nginx/sites-enabled/default"
+#     - "/etc/nginx/sites-available/default"
+#   notify:
+#     - restart nginx
+
+# Setup default site for nginx
+- name: setup default nginx site
+  template: src=nginx-default.j2 dest={{ item }}
+  with_items:
+    - /etc/nginx/sites-enabled/default
+    - /etc/nginx/sites-available/default
+
+# Setup a site for nginx
+- name: set some php fpm settings
+  template: src=php-fpm.ini dest=/etc/php/7.0/fpm/php.ini
+  notify:
+    - restart nginx
+
+# Setup Some PHP-FPM Options
+- name: set some php fpm settings
+  template: src=php-fpm.ini dest=/etc/php/7.0/fpm/php.ini
+
+
+# Copy fastcgi_params to Nginx because they broke it on the PPA
+- name: copy fastcgi_params
+  template: dest=/etc/nginx/fastcgi_params src=fastcgi_params
+
+# Set The Nginx & PHP-FPM User
+- name: set nginx user
+  lineinfile: dest=/etc/nginx/nginx.conf regexp="{{ item.regex }}" line="{{ item.line }}"
+  with_items:
+    - {regex: "user .*;", line: "user {{ settler_user }};"}
+    - {regex: "server_names_hash_bucket_size.*", line: "server_names_hash_bucket_size 64;"}
+  notify:
+    - restart nginx
+
+- name: set php7.0-fpm user
+  lineinfile: dest=/etc/php/7.0/fpm/pool.d/www.conf regexp="{{ item.regex }}" line="{{ item.line }}"
+  with_items:
+    - {regex: "^user = .*", line: "user = {{ settler_user }}"}
+    - {regex: "^group = .*", line: "group = {{ settler_user }}"}
+    - {regex: "listen.owner.*", line: "listen.owner = {{ settler_user }}"}
+    - {regex: "listen.group.*", line: "listen.group = {{ settler_user }}"}
+    - {regex: "listen.mode.*", line: "listen.mode = 0666"}
+  notify:
+    - restart php-fpm
+    - restart nginx
+
+
+# Add Vagrant User To WWW-Data
+- name: add vagrant user to www-data
+  user: name={{ settler_user }} groups=www-data append=yes
+
+
+# Install Blackfire
+- name: install blackfire
+  apt: name={{ item }} state=present
+  with_items:
+    - blackfire-agent
+    - blackfire-php
+  when: settler_blackfire
+
+
+# Install A Few Other Things
+
+# redis
+- name: install redis
+  apt: name={{ item }} state=present
+  with_items:
+    - redis-server
+  when: settler_redis
+
+# memcached
+- name: install memcached
+  apt: name={{ item }} state=present
+  with_items:
+    - memcached
+  when: settler_memcached
+
+# beanstalkd
+- name: install beanstalkd
+  apt: name={{ item }} state=present
+  with_items:
+    - beanstalkd
+  when: settler_beanstalkd
+
+
+# Configure Beanstalkd
+- lineinfile: dest=/etc/default/beanstalkd regexp="START=yes" line="START=yes"
+  when: settler_beanstalkd
+
+- name: ensure beanstalkd is running
+  service: name=beanstalkd state=started enabled=yes
+  when: settler_beanstalkd
+
+
+# Enable Swap Memory
+- command: /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024 creates=/var/swap.1
+  register: swap
+- command: /sbin/mkswap /var/swap.1
+  when: swap.changed
+- command: /sbin/swapon /var/swap.1
+  when: swap.changed
+
+
+# Minimize The Disk Image
+#- command: dd if=/dev/zero of=/EMPTY bs=1M
+#- command: rm -f /EMPTY
+#- command: sync

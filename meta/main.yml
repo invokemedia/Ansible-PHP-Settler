@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: invoke
+  description: Ansible scripts that build the Laravel Homestead development environment.
+  company: Invoke
+  license: MIT
+  min_ansible_version: 2.1
+  platforms:
+   - name: Ubuntu
+     versions:
+      - precise
+      - quantal
+      - raring
+      - saucy
+  categories:
+    - cloud:ec2
+    - database:sql
+    - networking
+    - web
+  dependencies: []

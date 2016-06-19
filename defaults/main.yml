@@ -1,0 +1,28 @@
+---
+# defaults file for settler
+
+# update the cache?
+settler_update_cache: yes
+# cache timeout
+settler_cache_valid_time: 3600
+
+# flag for updating all the server packages
+settler_upgrade_packages: yes
+
+# file for timezone settings
+#settler_timezone_file: /usr/share/zoneinfo/America/Vancouver
+settler_timezone_file: /usr/share/zoneinfo/UTC
+
+# the user for the system
+settler_user: vagrant
+
+# some additional tools
+settler_redis: no
+settler_memcached: no
+settler_beanstalkd: no
+settler_blackfire: no
+
+# nginx settings
+settler_nginx_default_server: default_server
+settler_nginx_server_name: server_name
+settler_nginx_site_folder_root: /var/www/laravel
