@@ -14,6 +14,11 @@ It installs PHP, PHP-FPM, and Nginx on the server. There are also flags to insta
 
 This role also assumes you are not going to be setting up more than 1 site on the server.
 
+Installation
+------------
+
+`git clone https://github.com/invokemedia/ansible-laravel-settler roles/invokemedia.ansible-laravel-settler`
+
 Role Variables
 --------------
 
@@ -40,9 +45,10 @@ settler_beanstalkd: no
 settler_blackfire: no
 
 # nginx settings
-settler_nginx_default_server: default_server
-settler_nginx_server_name: server_name
-settler_nginx_site_folder_root: /var/www/laravel
+settler_nginx_default_server: 80
+settler_nginx_server_name: localhost
+settler_nginx_site_folder_root: /var/www/html/laravel
+settler_nginx_site_public_folder: /public
 ```
 
 Dependencies
@@ -53,10 +59,20 @@ None.
 Example Playbook
 -------------------------
 
+Here is how you would launch the default Nginx setup.
+
 ```
-roles:
-  - { role: invokemedia.ansible-laravel-settler }
+- hosts: web
+  sudo: yes
+  vars:
+    settler_nginx_server_name: ec2-1-1-1-1.us-west-2.compute.amazonaws.com
+    settler_nginx_site_folder_root: /var/www/html
+    settler_nginx_site_public_folder: /public
+  roles:
+    - { role: invokemedia.ansible-laravel-settler }
 ```
+
+You would need to have a project sent to `settler_nginx_site_folder_root` that contained a `/public` and then some index file inside that.
 
 License
 -------
