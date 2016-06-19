@@ -14,7 +14,9 @@ settler_upgrade_packages: yes
 settler_timezone_file: /usr/share/zoneinfo/UTC
 
 # the user for the system
-settler_user: vagrant
+settler_user: www-data
+
+settler_nginx_ipv6: no
 
 # some additional tools
 settler_redis: no

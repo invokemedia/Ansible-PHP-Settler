@@ -17,3 +17,7 @@
 
 - name: restart redis-server
   service: name=redis-server state=restarted
+
+- name: set laravel folder permissions
+  file: path="{{ settler_nginx_site_folder_root }}/storage" recurse=yes owner="{{ settler_user }}" mode=0755 state=directory
+  file: path="{{ settler_nginx_site_folder_root }}/bootstrap/cache" recurse=yes owner="{{ settler_user }}" mode=0755 state=directory

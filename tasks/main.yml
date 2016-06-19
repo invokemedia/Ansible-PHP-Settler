@@ -33,11 +33,6 @@
     - "ppa:ondrej/php"
 
 
-# Update Package Lists
-- name: update package lists
-  apt: update_cache=yes
-
-
 # Install Some Basic Packages
 - name: install some basic packages
   apt: name={{ item }} state=present
@@ -155,6 +150,7 @@
   with_items:
     - {regex: "^user = .*", line: "user = {{ settler_user }}"}
     - {regex: "^group = .*", line: "group = {{ settler_user }}"}
+    - {regex: "^listen = .*", line: "listen = /var/run/php/php7.0-fpm.sock"}
     - {regex: "listen.owner.*", line: "listen.owner = {{ settler_user }}"}
     - {regex: "listen.group.*", line: "listen.group = {{ settler_user }}"}
     - {regex: "listen.mode.*", line: "listen.mode = 0666"}
