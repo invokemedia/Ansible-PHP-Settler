@@ -74,6 +74,17 @@ Here is how you would launch the default Nginx setup.
 
 You would need to have a project sent to `settler_nginx_site_folder_root` that contained a `/public` and then some index file inside that.
 
+Handlers
+--------
+
+* `restart nginx` - restarts nginx
+* `restart php-fpm` - restarts php-fpm
+* `restart memcached` - restarts memcached
+* `restart beanstalkd` - restarts beanstalkd
+* `restart blackfire-agent` - restarts blackfire-agent
+* `restart redis-server` - restarts redis-server
+* `set laravel folder permissions` - sets user and mode permissions on folders
+
 License
 -------
 
