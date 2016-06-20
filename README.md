@@ -17,7 +17,7 @@ This role also assumes you are not going to be setting up more than 1 site on th
 Installation
 ------------
 
-`git clone https://github.com/invokemedia/ansible-laravel-settler roles/invokemedia.ansible-laravel-settler`
+`git clone https://github.com/invokemedia/ansible-laravel-settler roles/invokemedia.laravel-settler`
 
 Role Variables
 --------------
@@ -70,7 +70,7 @@ Here is how you would launch the default Nginx setup.
     settler_nginx_site_folder_root: /var/www/html
     settler_nginx_site_public_folder: /public
   roles:
-    - { role: invokemedia.ansible-laravel-settler }
+    - { role: invokemedia.laravel-settler }
 ```
 
 You would need to have a project sent to `settler_nginx_site_folder_root` that contained a `/public` and then some index file inside that.
