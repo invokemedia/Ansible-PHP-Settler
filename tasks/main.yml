@@ -136,6 +136,13 @@
 - name: copy fastcgi_params
   template: dest=/etc/nginx/fastcgi_params src=fastcgi_params
 
+# Add Vagrant User To WWW-Data
+- name: add user to www-data
+  user: name={{ settler_user }} groups=www-data append=yes
+  notify:
+    - restart php-fpm
+    - restart nginx
+
 # Set The Nginx & PHP-FPM User
 - name: set nginx user
   lineinfile: dest=/etc/nginx/nginx.conf regexp="{{ item.regex }}" line="{{ item.line }}"
@@ -157,11 +164,6 @@
   notify:
     - restart php-fpm
     - restart nginx
-
-
-# Add Vagrant User To WWW-Data
-- name: add user to www-data
-  user: name={{ settler_user }} groups=www-data append=yes
 
 
 # Install Blackfire

@@ -29,3 +29,6 @@ settler_nginx_default_server: 80
 settler_nginx_server_name: localhost
 settler_nginx_site_folder_root: /var/www/html/laravel
 settler_nginx_site_public_folder: /public
+
+settler_letsencrypt: no
+# settler_letsencrypt_domain: localhost

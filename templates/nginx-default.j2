@@ -1,11 +1,25 @@
+{% if settler_letsencrypt %}
 server {
     listen {{ settler_nginx_default_server | default("80") }};
+    server_name {{ settler_letsencrypt_domain }};
+    return 301 https://{{ settler_letsencrypt_domain }}$request_uri;
+}
+{% endif %}
+
+server {
+    {% if settler_letsencrypt %}
+    listen 443 ssl;
+    server_name {{ settler_letsencrypt_domain }};
+    ssl_certificate /etc/letsencrypt/live/{{ settler_letsencrypt_domain }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ settler_letsencrypt_domain }}/privkey.pem;
+    {% else %}
+    listen {{ settler_nginx_default_server | default("80") }};
+    server_name {{ settler_nginx_server_name | default("localhost") }};
+    {% endif %}
 
     {% if settler_nginx_ipv6 %}
     listen [::]:{{ settler_nginx_default_server | default("80") }} ipv6only=on;
     {% endif %}
-
-    server_name {{ settler_nginx_server_name | default("localhost") }};
 
     root {{ settler_nginx_site_folder_root }}{{ settler_nginx_site_public_folder }};
 
