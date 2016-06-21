@@ -56,4 +56,8 @@ server {
       access_log off;
       add_header Cache-Control "public";
     }
+
+    location ~ /.well-known {
+      allow all;
+    }
 }
