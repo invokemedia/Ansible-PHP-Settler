@@ -22,5 +22,6 @@
 - name: set laravel folder permissions
   file: path="{{ settler_nginx_site_folder_root }}/{{ item }}" recurse=yes owner="{{ settler_user }}" mode=0755 state=directory
   with_items:
+    - "public"
     - "storage"
     - "bootstrap/cache"
