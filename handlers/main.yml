@@ -25,3 +25,6 @@
     - "public"
     - "storage"
     - "bootstrap/cache"
+
+- name: reload sysctl
+  command: sysctl -p

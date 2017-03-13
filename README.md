@@ -12,6 +12,8 @@ This role assumes you are using AWS EC2 and an external database like AWS RDS.
 
 It installs PHP, PHP-FPM, and Nginx on the server. There are also flags to install [Redis](http://redis.io/), [Memcached](https://memcached.org/), [Beanstalkd](http://kr.github.io/beanstalkd/), and [Blackfire](https://blackfire.io/).
 
+The role will also tweak [sysctl](https://linux.die.net/man/8/sysctl). We are using a config [from this site](https://easyengine.io/tutorials/linux/sysctl-conf/) to optimize the settings for a web server.
+
 This role also assumes you are not going to be setting up more than 1 site on the server.
 
 Installation
@@ -78,6 +80,7 @@ You would need to have a project sent to `settler_nginx_site_folder_root` that c
 Handlers
 --------
 
+* `reload sysctl` - reload sysctl
 * `restart nginx` - restarts nginx
 * `restart php-fpm` - restarts php-fpm
 * `restart memcached` - restarts memcached
@@ -94,8 +97,8 @@ MIT
 Author Information
 ------------------
 
-* [Invoke Media](http://www.invokemedia.com/)
-* <biz@invokemedia.com>
+* [Invoke Media](https://www.invokedigital.co/)
+* <webmaster@invokedigital.co>
 
 References
 ----------

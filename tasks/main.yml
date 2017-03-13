@@ -217,6 +217,8 @@
 - command: /sbin/swapon /var/swap.1
   when: swap.changed
 
+# includes
+- include: sysctl-tweaks.yml
 
 # Minimize The Disk Image
 #- command: dd if=/dev/zero of=/EMPTY bs=1M
