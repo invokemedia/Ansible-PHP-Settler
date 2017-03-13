@@ -6,5 +6,6 @@
         # {{ item.name }}
         {{ item.key }}
       marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
+      state: "{{ item.state|default('present') }}"
     with_items: "{{ ssh_list }}"
     when: add_ssh_users
