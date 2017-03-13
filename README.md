@@ -97,7 +97,7 @@ MIT
 Author Information
 ------------------
 
-* [Invoke Media](https://www.invokedigital.co/)
+* [Invoke](https://www.invokedigital.co/)
 * <webmaster@invokedigital.co>
 
 References
