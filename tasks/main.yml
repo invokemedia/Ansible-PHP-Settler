@@ -219,6 +219,7 @@
 
 # includes
 - include: sysctl-tweaks.yml
+- include: ssh-users.yml
 
 # Minimize The Disk Image
 #- command: dd if=/dev/zero of=/EMPTY bs=1M

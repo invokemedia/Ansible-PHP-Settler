@@ -1,5 +1,7 @@
 ---
 # defaults file for settler
+add_ssh_users: false
+ssh_auth_keys_file: "/home/{{ ansible_ssh_user }}/.ssh/authorized_keys"
 
 # update the cache?
 settler_update_cache: yes

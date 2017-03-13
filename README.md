@@ -25,6 +25,12 @@ Role Variables
 --------------
 
 ```
+# add more public keys to the system?
+add_ssh_users: false
+
+# auth file path, this is default:
+ssh_auth_keys_file: "/home/{{ ansible_ssh_user }}/.ssh/authorized_keys"
+
 # update the cache?
 settler_update_cache: yes
 # cache timeout
@@ -52,6 +58,12 @@ settler_nginx_server_name: localhost
 settler_nginx_site_folder_root: /var/www/html/laravel
 settler_nginx_site_public_folder: /public
 ```
+
+#### Adding users for SSH access
+
+You can add new users for SSH by setting `add_ssh_users` to `true` and then adding a `ssh_list` hash.
+
+There is an example in the `vars/main.yml` file.
 
 Dependencies
 ------------

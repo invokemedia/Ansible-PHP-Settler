@@ -1,0 +1,10 @@
+---
+  - name: Add additional public keys
+    blockinfile:
+      dest: {{ ssh_auth_keys_file }}
+      block: |
+        # {{ item.name }}
+        {{ item.key }}
+      marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
+    with_items: "{{ ssh_list }}"
+    when: add_ssh_users
