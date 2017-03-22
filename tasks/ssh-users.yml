@@ -1,7 +1,7 @@
 ---
   - name: Add additional public keys
     blockinfile:
-      dest: {{ ssh_auth_keys_file }}
+      dest: "{{ ssh_auth_keys_file }}"
       block: |
         # {{ item.name }}
         {{ item.key }}
