@@ -225,3 +225,14 @@
 #- command: dd if=/dev/zero of=/EMPTY bs=1M
 #- command: rm -f /EMPTY
 #- command: sync
+
+- name: check if we need to install letsencrypt
+  stat: path="/etc/letsencrypt/live/{{ settler_letsencrypt_domain }}/fullchain.pem"
+  register: pem
+  tags: letsencrypt
+
+- include: letsencrypt.yml
+  when:
+    - settler_letsencrypt == "yes"
+    - not pem.stat.exists
+  tags: letsencrypt

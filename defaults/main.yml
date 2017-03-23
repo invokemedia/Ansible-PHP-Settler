@@ -34,3 +34,4 @@ settler_nginx_site_public_folder: /public
 
 settler_letsencrypt: no
 # settler_letsencrypt_domain: localhost
+settler_letsencrypt_email: webmaster@invokedigital.co
