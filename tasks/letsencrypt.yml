@@ -1,0 +1,36 @@
+---
+
+- name: install letsencrypt from apt
+  apt: name=letsencrypt update_cache=yes
+  sudo: yes
+
+- name: prepare letsencrypt domain proof folder
+  file: path="{{ settler_nginx_site_folder_root }}{{ settler_nginx_site_public_folder }}" state=directory
+  sudo: no
+
+- name: prepare server for proving domain ownership
+  template: src=nginx-default-domain-proof.j2 dest={{ item }}
+  with_items:
+    - /etc/nginx/sites-enabled/default
+    - /etc/nginx/sites-available/default
+
+- name: boot up server in non-https to prove domain ownership
+  service: name=nginx state=restarted
+
+- name: use letsencrypt webroot plugin
+  command: |
+    letsencrypt certonly
+    -a webroot
+    --webroot-path={{ settler_nginx_site_folder_root }}{{ settler_nginx_site_public_folder }}
+    -d {{ settler_letsencrypt_domain }}
+    --non-interactive
+    --agree-tos
+    --email {{ settler_letsencrypt_email }}
+  sudo: yes
+  notify: restart nginx
+
+- name: reset nginx sites template
+  template: src=nginx-default.j2 dest={{ item }}
+  with_items:
+    - /etc/nginx/sites-enabled/default
+    - /etc/nginx/sites-available/default
