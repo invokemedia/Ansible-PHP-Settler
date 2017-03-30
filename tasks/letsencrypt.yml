@@ -5,8 +5,8 @@
   sudo: yes
 
 - name: prepare letsencrypt domain proof folder
-  file: path="{{ settler_nginx_site_folder_root }}{{ settler_nginx_site_public_folder }}" state=directory
-  sudo: no
+  file: path="{{ settler_nginx_site_folder_root }}{{ settler_nginx_site_public_folder }}" state=directory owner="{{ settler_user }}" group="{{ settler_user }}"
+  sudo: yes
 
 - name: prepare server for proving domain ownership
   template: src=nginx-default-domain-proof.j2 dest={{ item }}
