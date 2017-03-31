@@ -1,6 +1,2 @@
 ---
 # vars file for settler
-
-# the list of users and their public keys
-ssh_list:
-  # - { name: username, key: ssh-rsa RANDOM_STRING webmaster@invokedigital.co, state: 'present' }
