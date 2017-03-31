@@ -3,6 +3,10 @@
 add_ssh_users: false
 ssh_auth_keys_file: "/home/{{ ansible_ssh_user }}/.ssh/authorized_keys"
 
+# the list of users and their public keys
+ssh_list:
+  # - { name: username, key: ssh-rsa RANDOM_STRING webmaster@invokedigital.co, state: 'present' }
+
 # update the cache?
 settler_update_cache: yes
 # cache timeout
