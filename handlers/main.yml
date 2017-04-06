@@ -26,5 +26,10 @@
     - "storage"
     - "bootstrap/cache"
 
+- name: Clear pagespeed cache
+  file:
+    state: absent
+    path: /var/ngx_pagespeed_cache/
+
 - name: reload sysctl
   command: sysctl -p

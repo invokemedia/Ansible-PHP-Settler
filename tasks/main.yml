@@ -28,7 +28,7 @@
 - name: add package repositories
   apt_repository: repo={{ item }}
   with_items:
-    - "ppa:nginx/stable"
+    - "ppa:hda-me/nginx-stable"
     - "ppa:chris-lea/redis-server"
     - "ppa:ondrej/php"
 
@@ -218,6 +218,7 @@
   when: swap.changed
 
 # includes
+- include: pagespeed.yml
 - include: sysctl-tweaks.yml
 - include: ssh-users.yml
   tags: ssh-users

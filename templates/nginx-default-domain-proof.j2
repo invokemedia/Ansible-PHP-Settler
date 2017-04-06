@@ -14,6 +14,24 @@ server {
 
     client_max_body_size 12M;
 
+    {% if settler_nginx_enable_pagespeed %}
+    # enable ngx_pagespeed
+    pagespeed on;
+
+    pagespeed FileCachePath /var/ngx_pagespeed_cache;
+
+    # enable my own filters
+    pagespeed RewriteLevel PassThrough;
+
+    # disable particular filter(s) in CoreFilters
+    pagespeed DisableFilters inline_google_font_css,rewrite_images,extend_cache,insert_dns_prefetch,hint_preload_subresources;
+
+    # enable additional filter(s) selectively
+    pagespeed EnableFilters collapse_whitespace;
+    pagespeed EnableFilters lazyload_images;
+    pagespeed EnableFilters insert_dns_prefetch;
+    {% endif %}
+
     gzip on;
     gzip_vary on;
     gzip_disable "msie6";
