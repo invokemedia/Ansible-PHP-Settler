@@ -137,7 +137,7 @@
 - name: copy fastcgi_params
   template: dest=/etc/nginx/fastcgi_params src=fastcgi_params
 
-# Add Vagrant User To WWW-Data
+# Add User To WWW-Data
 - name: add user to www-data
   user: name={{ settler_user }} groups=www-data append=yes
   notify:
@@ -165,6 +165,29 @@
   notify:
     - restart php-fpm
     - restart nginx
+
+
+# own the web directory
+- file:
+    path: "{{ settler_nginx_site_folder_root }}"
+    state: directory
+    recurse: yes
+    owner: "{{ ansible_user }}"
+    group: www-data
+    mode: 0770
+
+# set the nginx user to allow writing to public
+- file:
+    path: "{{ settler_nginx_site_folder_root }}/{{ settler_nginx_site_public_folder }}"
+    state: directory
+    owner: "{{ settler_user }}"
+    group: www-data
+    mode: 0770
+
+# Add the user to the web group
+- user:
+    name: "{{ ansible_user }}"
+    groups: www-data
 
 
 # Install Blackfire
@@ -217,7 +240,17 @@
 - command: /sbin/swapon /var/swap.1
   when: swap.changed
 
+- name: check if we need to install letsencrypt
+  stat: path="/etc/letsencrypt/live/{{ settler_letsencrypt_domain }}/fullchain.pem"
+  register: pem
+  tags: letsencrypt
+
 # includes
+- include: letsencrypt.yml
+  when:
+    - settler_letsencrypt == "yes"
+    - not pem.stat.exists
+  tags: letsencrypt
 - include: sysctl-tweaks.yml
 - include: ssh-users.yml
   tags: ssh-users
@@ -226,14 +259,3 @@
 #- command: dd if=/dev/zero of=/EMPTY bs=1M
 #- command: rm -f /EMPTY
 #- command: sync
-
-- name: check if we need to install letsencrypt
-  stat: path="/etc/letsencrypt/live/{{ settler_letsencrypt_domain }}/fullchain.pem"
-  register: pem
-  tags: letsencrypt
-
-- include: letsencrypt.yml
-  when:
-    - settler_letsencrypt == "yes"
-    - not pem.stat.exists
-  tags: letsencrypt
