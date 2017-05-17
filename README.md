@@ -87,6 +87,12 @@ Here is how you would launch the default Nginx setup.
     - { role: invokemedia.laravel-settler }
 ```
 
+Example usage with a playbook:
+
+```
+ansible-playbook playbook.yml -i stage
+```
+
 You would need to have a project sent to `settler_nginx_site_folder_root` that contained a `/public` and then some index file inside that.
 
 Handlers
