@@ -249,7 +249,7 @@
 - include: letsencrypt.yml
   when:
     - settler_letsencrypt == "yes"
-    - not pem.stat.exists
+    - (not pem.stat.exists) or (force_letsencrypt is defined)
   tags: letsencrypt
 - include: sysctl-tweaks.yml
 - include: ssh-users.yml
