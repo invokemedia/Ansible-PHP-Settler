@@ -17,15 +17,20 @@
 - name: boot up server in non-https to prove domain ownership
   service: name=nginx state=restarted
 
+- name: define letsencrypt webroot plugin command
+  set_fact:
+    letsencrypt_webroot_command: >
+      letsencrypt certonly
+      -a webroot
+      --webroot-path={{ settler_nginx_site_folder_root }}{{ settler_nginx_site_public_folder }}
+      -d {{ settler_letsencrypt_domain }}
+      --non-interactive
+      --agree-tos
+      --email {{ settler_letsencrypt_email }}
+  tags: letsencrypt_cron
+
 - name: use letsencrypt webroot plugin
-  command: |
-    letsencrypt certonly
-    -a webroot
-    --webroot-path={{ settler_nginx_site_folder_root }}{{ settler_nginx_site_public_folder }}
-    -d {{ settler_letsencrypt_domain }}
-    --non-interactive
-    --agree-tos
-    --email {{ settler_letsencrypt_email }}
+  command: "{{ letsencrypt_webroot_command }}"
   sudo: yes
   notify: restart nginx
 
@@ -34,3 +39,8 @@
   with_items:
     - /etc/nginx/sites-enabled/default
     - /etc/nginx/sites-available/default
+
+- name: install letsencrypt cron job
+  cron: name="add-autorenew" minute=30 hour=2 weekday=1 job="{{ letsencrypt_webroot_command }}" state=present
+  sudo: yes
+  tags: letsencrypt_cron
