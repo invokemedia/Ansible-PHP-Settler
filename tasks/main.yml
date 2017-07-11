@@ -243,7 +243,9 @@
 - name: check if we need to install letsencrypt
   stat: path="/etc/letsencrypt/live/{{ settler_letsencrypt_domain }}/fullchain.pem"
   register: pem
-  tags: letsencrypt
+  tags:
+    - letsencrypt
+    - letsencrypt_cron
 
 # includes
 - include: letsencrypt.yml
