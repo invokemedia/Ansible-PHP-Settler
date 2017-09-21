@@ -244,6 +244,7 @@
   stat: path="/etc/letsencrypt/live/{{ settler_letsencrypt_domain }}/fullchain.pem"
   register: pem
   tags: letsencrypt
+  when: settler_letsencrypt_domain is defined
 
 # includes
 - include: letsencrypt.yml
