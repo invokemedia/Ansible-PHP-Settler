@@ -127,7 +127,7 @@
 
 # Setup a site for nginx
 - name: set some php fpm settings
-  template: src=php-fpm.ini dest=/etc/php/7.0/fpm/php.ini
+  template: src={{ settler_php_fpm_ini_template }} dest=/etc/php/7.0/fpm/php.ini
   notify:
     - restart php-fpm
     - restart nginx
