@@ -1,41 +1,43 @@
 ---
-# defaults file for settler
+# Defaults file for settler
 add_ssh_users: false
 ssh_auth_keys_file: "/home/{{ ansible_ssh_user }}/.ssh/authorized_keys"
 
 # the list of users and their public keys
 ssh_list:
-  # - { name: username, key: ssh-rsa RANDOM_STRING webmaster@invokedigital.co, state: 'present' }
+  #- { name: username, key: ssh-rsa RANDOM_STRING webmaster@invokedigital.co, state: 'present' }
 
-# update the cache?
+# Update the cache?
 settler_update_cache: yes
-# cache timeout
+
+# Cache timeout
 settler_cache_valid_time: 3600
 
-# flag for updating all the server packages
+# Flag for updating all the server packages
 settler_upgrade_packages: yes
 
-# file for timezone settings
-#settler_timezone_file: /usr/share/zoneinfo/America/Vancouver
-settler_timezone_file: /usr/share/zoneinfo/UTC
+# File for timezone settings
+settler_timezone_file: /usr/share/zoneinfo/America/Vancouver
+settler_timezone: America/Vancouver
 
 # the user for the system
 settler_user: www-data
 
+# Support for ipv6
 settler_nginx_ipv6: no
 
-# some additional tools
-settler_redis: no
-settler_memcached: no
-settler_beanstalkd: no
-settler_blackfire: no
+# Some additional tools
+settler_redis: yes
+settler_memcached: yes
+settler_beanstalkd: yes
+settler_blackfire: yes
 
 # nginx settings
 settler_nginx_default_server: 80
 settler_nginx_server_name: localhost
-settler_nginx_site_folder_root: /var/www/html/laravel
+settler_nginx_site_folder_root: /var/www/html
 settler_nginx_site_public_folder: /public
 
+# Run let's encrypt
 settler_letsencrypt: no
-# settler_letsencrypt_domain: localhost
 settler_letsencrypt_email: webmaster@invokedigital.co

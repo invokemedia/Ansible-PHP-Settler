@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: invokemedia
-  description: Ansible scripts that build the Laravel Homestead development environment.
+  description: Ansible scripts to build a Laravel Homestead-like environment.
   company: Invoke Media
   license: MIT
   min_ansible_version: 2.1

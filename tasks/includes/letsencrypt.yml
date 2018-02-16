@@ -1,23 +1,28 @@
 ---
+- name: Check if we need to install letsencrypt
+  stat: path="/etc/letsencrypt/live/{{ settler_letsencrypt_domain }}/fullchain.pem"
+  register: pem
+  tags: letsencrypt
+  when: settler_letsencrypt_domain is defined
 
-- name: install letsencrypt from apt
+- name: Install letsencrypt from apt
   apt: name=letsencrypt update_cache=yes
   sudo: yes
 
-- name: prepare letsencrypt domain proof folder
+- name: Prepare letsencrypt domain proof folder
   file: path="{{ settler_nginx_site_folder_root }}{{ settler_nginx_site_public_folder }}" state=directory owner="{{ settler_user }}" group="{{ settler_user }}"
   sudo: yes
 
-- name: prepare server for proving domain ownership
+- name: Prepare server for proving domain ownership
   template: src=nginx-default-domain-proof.j2 dest={{ item }}
   with_items:
     - /etc/nginx/sites-enabled/default
     - /etc/nginx/sites-available/default
 
-- name: boot up server in non-https to prove domain ownership
+- name: Boot up server in non-https to prove domain ownership
   service: name=nginx state=restarted
 
-- name: use letsencrypt webroot plugin
+- name: Use letsencrypt webroot plugin
   command: |
     letsencrypt certonly
     -a webroot
@@ -29,7 +34,7 @@
   sudo: yes
   notify: restart nginx
 
-- name: reset nginx sites template
+- name: Reset nginx sites template
   template: src=nginx-default.j2 dest={{ item }}
   with_items:
     - /etc/nginx/sites-enabled/default

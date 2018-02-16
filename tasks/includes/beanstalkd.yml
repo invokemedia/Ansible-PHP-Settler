@@ -1,0 +1,13 @@
+---
+# Beanstalkd
+- name: Install beanstalkd
+  apt: name={{ item }} state=present
+  with_items:
+    - beanstalkd
+
+# Configure Beanstalkd
+- lineinfile: dest=/etc/default/beanstalkd regexp="START=yes" line="START=yes"
+  when: settler_beanstalkd
+
+- name: ensure beanstalkd is running
+  service: name=beanstalkd state=started enabled=yes

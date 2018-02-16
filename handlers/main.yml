@@ -1,30 +1,28 @@
 ---
-# handlers file for settler
-- name: restart nginx
+- name: Restart nginx
   service: name=nginx state=restarted
 
-- name: restart php-fpm
-  # service: name=php7.0-fpm state=restarted
-  command: service php7.0-fpm restart
+- name: Restart php-fpm
+  command: service php7.2-fpm restart
 
-- name: restart memcached
+- name: Restart memcached
   service: name=memcached state=restarted
 
-- name: restart beanstalkd
+- name: Restart beanstalkd
   service: name=beanstalkd state=restarted
 
-- name: restart blackfire-agent
+- name: Restart blackfire-agent
   service: name=blackfire-agent state=restarted
 
-- name: restart redis-server
+- name: Restart redis-server
   service: name=redis-server state=restarted
 
-- name: set laravel folder permissions
+- name: Set laravel folder permissions
   file: path="{{ settler_nginx_site_folder_root }}/{{ item }}" recurse=yes owner="{{ settler_user }}" mode=0755 state=directory
   with_items:
     - "public"
     - "storage"
     - "bootstrap/cache"
 
-- name: reload sysctl
+- name: Reload sysctl
   command: sysctl -p

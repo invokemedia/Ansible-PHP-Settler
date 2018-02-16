@@ -1,0 +1,8 @@
+---
+# Install Composer
+- name: Install composer
+  shell: curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+
+# Add composer to global PATH
+- name: Add composer to global PATH
+  lineinfile: dest=/home/{{ settler_user }}/.profile line=PATH="/home/{{ settler_user }}/.composer/vendor/bin:$PATH" create=yes

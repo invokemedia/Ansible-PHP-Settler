@@ -1,0 +1,52 @@
+---
+# Install PHP
+- name: Install PHP requirements
+  apt: name={{ item }} state=present
+  with_items:
+    - php7.2-fpm
+    - php7.2-bcmath
+    - php7.2-cli
+    - php7.2-curl
+    - php7.2-dev
+    - php7.2-gd
+    - php7.2-intl
+    - php7.2-imap
+    - php7.2-mbstring
+    - php7.2-mcrypt
+    - php7.2-mysql
+    - php7.2-pgsql
+    - php7.2-readline
+    - php7.2-xml
+    - php7.2-zip
+    - php7.2-a2cu
+    - php7.2-imagick
+    - php7.2-memcached
+    - php7.2-soap
+    - php7.2-sqlite3
+
+# Set PHP CLI settings
+- name: Set PHP CLI settings
+  template: src=php.ini dest=/etc/php/7.2/cli/conf.d/00-php.ini
+
+# Set PHP-FPM 7.2 user
+- name: Set PHP-FPM 7.2 user
+  lineinfile: dest=/etc/php/7.2/fpm/pool.d/www.conf regexp="{{ item.regex }}" line="{{ item.line }}"
+  with_items:
+    - {regex: "^user = .*", line: "user = {{ settler_user }}"}
+    - {regex: "^group = .*", line: "group = {{ settler_user }}"}
+    - {regex: "^listen = .*", line: "listen = /var/run/php/php7.0-fpm.sock"}
+    - {regex: "listen.owner.*", line: "listen.owner = {{ settler_user }}"}
+    - {regex: "listen.group.*", line: "listen.group = {{ settler_user }}"}
+    - {regex: "listen.mode.*", line: "listen.mode = 0666"}
+  notify:
+    - restart php-fpm
+
+# Configure PHP-FPM
+- name: Set some PHP-FPM settings
+  template: src=php-fpm.ini dest=/etc/php/7.2/fpm/php.ini
+  notify:
+    - restart php-fpm
+
+# Ensure PHP-FPM is running
+- name: Ensure PHP-FPM 7.2 is running
+  service: name=php7.2-fpm state=started enabled=yes

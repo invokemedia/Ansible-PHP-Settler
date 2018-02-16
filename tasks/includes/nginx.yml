@@ -1,0 +1,30 @@
+---
+# Install Nginx
+- name: Install nginx
+  apt: name={{ item }} state=present
+  with_items:
+    - nginx
+
+# Setup default site for nginx
+- name: Setup default nginx site
+  template: src=nginx-default.j2 dest={{ item }}
+  with_items:
+    - /etc/nginx/sites-enabled/default
+    - /etc/nginx/sites-available/default
+
+# Copy fastcgi_params to nginx config
+- name: Copy fastcgi_params
+  template: dest=/etc/nginx/fastcgi_params src=fastcgi_params
+
+# Set the nginx & PHP-FPM user
+- name: Set nginx user
+  lineinfile: dest=/etc/nginx/nginx.conf regexp="{{ item.regex }}" line="{{ item.line }}"
+  with_items:
+    - {regex: "user .*;", line: "user {{ settler_user }};"}
+    - {regex: "server_names_hash_bucket_size.*", line: "server_names_hash_bucket_size 64;"}
+  notify:
+    - restart nginx
+
+# Ensure nginx is running
+- name: Ensure nginx is running
+  service: name=nginx state=started enabled=yes
