@@ -2,7 +2,10 @@
 # Update Package List
 - name: Update package lists
   apt: update_cache=yes cache_valid_time={{ settler_cache_valid_time }}
-  when: settler_update_cache
+  register: apt_result
+  until: apt_result|success
+  retries: 3
+  delay: 1
 
 - name: Upgrade all packages
   apt: upgrade=dist
