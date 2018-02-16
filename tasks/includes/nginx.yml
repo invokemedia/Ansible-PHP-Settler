@@ -25,6 +25,18 @@
   notify:
     - Restart nginx
 
+# Copy default images & html page to /public
+- name: Copy default site
+  copy:
+    src: "{{item}}"
+    dest: /var/www/html/public
+    owner: www-data
+    group: www-data
+    mode: 0644
+  with_fileglob:
+      - templates/default-site/*
+  tags: default-site
+
 # Ensure nginx is running
 - name: Ensure nginx is running
   service: name=nginx state=started enabled=yes
