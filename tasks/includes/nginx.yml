@@ -23,7 +23,7 @@
     - {regex: "user .*;", line: "user {{ settler_user }};"}
     - {regex: "server_names_hash_bucket_size.*", line: "server_names_hash_bucket_size 64;"}
   notify:
-    - restart nginx
+    - Restart nginx
 
 # Ensure nginx is running
 - name: Ensure nginx is running

@@ -30,6 +30,6 @@
       - { key: 'net.ipv4.tcp_tw_recycle', value: '1' }
       - { key: 'net.ipv4.tcp_tw_reuse', value: '1' }
     notify:
-    - reload sysctl
+    - Reload sysctl
 
 # FROM: https://easyengine.io/tutorials/linux/sysctl-conf/

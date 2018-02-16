@@ -12,13 +12,11 @@
     - php7.2-intl
     - php7.2-imap
     - php7.2-mbstring
-    - php7.2-mcrypt
     - php7.2-mysql
     - php7.2-pgsql
     - php7.2-readline
     - php7.2-xml
     - php7.2-zip
-    - php7.2-a2cu
     - php7.2-imagick
     - php7.2-memcached
     - php7.2-soap
@@ -39,13 +37,13 @@
     - {regex: "listen.group.*", line: "listen.group = {{ settler_user }}"}
     - {regex: "listen.mode.*", line: "listen.mode = 0666"}
   notify:
-    - restart php-fpm
+    - Restart php-fpm
 
 # Configure PHP-FPM
 - name: Set some PHP-FPM settings
   template: src=php-fpm.ini dest=/etc/php/7.2/fpm/php.ini
   notify:
-    - restart php-fpm
+    - Restart php-fpm
 
 # Ensure PHP-FPM is running
 - name: Ensure PHP-FPM 7.2 is running

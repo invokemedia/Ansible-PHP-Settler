@@ -7,10 +7,6 @@
   retries: 3
   delay: 1
 
-- name: Upgrade all packages
-  apt: upgrade=dist
-  when: settler_upgrade_packages
-
 # Force US locale
 - name: Force locale
   lineinfile: line='LC_ALL=en_US.UTF-8' dest=/etc/default/locale
@@ -31,6 +27,10 @@
     - "ppa:nginx/stable"
     - "ppa:chris-lea/redis-server"
     - "ppa:ondrej/php"
+
+- name: Upgrade all packages
+  apt: upgrade=dist
+  when: settler_upgrade_packages
 
 # Install basic packages
 - name: Install basic packages
@@ -58,7 +58,7 @@
 
 # Install PHP
 - import_tasks: includes/php.yml
-  tags: sysctl-tweaks
+  tags: php
 
 # Install Composer
 - import_tasks: includes/composer.yml
@@ -81,7 +81,8 @@
     - Restart nginx
 
 # Set the nginx user to allow writing to public
-- file:
+- name: Set the nginx user to allow writing to the public folder
+  file:
     path: "{{ settler_nginx_site_folder_root }}/{{ settler_nginx_site_public_folder }}"
     state: directory
     owner: "{{ settler_user }}"
@@ -89,7 +90,8 @@
     mode: 0770
 
 # Own the web directory
-- file:
+- name: Set permissions on the web directory
+  file:
     path: "{{ settler_nginx_site_folder_root }}"
     state: directory
     recurse: yes
@@ -98,7 +100,8 @@
     mode: 0770
 
 # Enable Swap Memory
-- command: /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024 creates=/var/swap.1
+- name: Enable swap memory
+  command: /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024 creates=/var/swap.1
   register: swap
 - command: /sbin/mkswap /var/swap.1
   when: swap.changed
@@ -114,14 +117,6 @@
   tags: ssh-users
 
 # Conditional installations
-# Install Blackfire
-- name: Install blackfire
-  apt: name={{ item }} state=present
-  with_items:
-    - blackfire-agent
-    - blackfire-php
-  when: settler_blackfire
-
 # Redis
 - name: Install redis
   apt: name={{ item }} state=present
@@ -135,14 +130,3 @@
   with_items:
     - memcached
   when: settler_memcached
-
-# Beanstalkd
-- import_tasks: includes/beanstalkd.yml
-  when: settler_beanstalkd
-
-# Let encrypt
-- import_tasks: includes/letsencrypt.yml
-  when:
-    - settler_letsencrypt == "yes"
-    - (not pem.stat.exists) or (force_letsencrypt is defined)
-  tags: letsencrypt
