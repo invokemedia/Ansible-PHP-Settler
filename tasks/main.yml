@@ -80,24 +80,26 @@
     - Restart php-fpm
     - Restart nginx
 
-# Set the nginx user to allow writing to public
-- name: Set the nginx user to allow writing to the public folder
-  file:
-    path: "{{ settler_nginx_site_folder_root }}/{{ settler_nginx_site_public_folder }}"
-    state: directory
-    owner: "{{ settler_user }}"
-    group: www-data
-    mode: 0770
-
 # Own the web directory
 - name: Set permissions on the web directory
   file:
     path: "{{ settler_nginx_site_folder_root }}"
     state: directory
     recurse: yes
+    force: yes
     owner: "{{ ansible_user }}"
     group: www-data
     mode: 0770
+
+# Set the nginx user to allow writing to public
+#- name: Set the nginx user to allow writing to the public folder
+#  file:
+#    path: "{{ settler_nginx_site_folder_root }}/{{ settler_nginx_site_public_folder }}"
+#    state: directory
+#    force: yes
+#    owner: "{{ settler_user }}"
+#    group: www-data
+#    mode: 0770
 
 # Enable Swap Memory
 - name: Enable swap memory
